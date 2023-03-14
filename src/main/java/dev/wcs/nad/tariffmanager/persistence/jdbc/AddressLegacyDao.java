@@ -18,32 +18,25 @@ public class AddressLegacyDao {
     
     public AddressLegacyDao(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
+    }      
 
-    public Optional<Address> getByIdJava7Syntax(long id) {
-        // Challenge: Add the retrieval of the Address ResultSet and the Mapping to an instance of Address here.
+public Optional<Address> getByIdJava7Syntax(long id) {
+                        try (Connection connection = dataSource.getConnection();
+                            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ADDRESS WHERE ID=?")) {
+                            stmt.setLong(1, id);
+                            try (ResultSet resultSet = stmt.executeQuery()) {
+                                while (resultSet.next()) {
+                                  
 
-       
-        try (Connection connection = dataSource.getConnection();
-           
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ADRESS WHERE ID=?")) {
-            stmt.setLong(1, id);
-           
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                while (resultSet.next()) {
-                    
-                    String name = resultSet.getString(1);
-                    return Optional.of(new VICustomer(String.valueOf(id), name, "", LocalDate.now(), LocalDate.now()));
-                }
-            }
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-        return Optional.empty();
-    }
-      
-    }
-
-
-
-
+                                    Address address = new Address();
+                                    
+                address.setId(id);
+                
+                                    return Optional.of(address);
+                                }
+                            }
+                        } catch (SQLException sqlException) {
+                            sqlException.printStackTrace();
+                        }
+                        return Optional.empty();
+                    }}
