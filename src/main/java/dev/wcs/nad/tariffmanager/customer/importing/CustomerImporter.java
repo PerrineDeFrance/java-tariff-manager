@@ -21,10 +21,15 @@ import java.util.List;
 public class CustomerImporter {
 
     private final int juniorCustomerDiscountPercentage;
-    // Challenge: Add other discount percentage here and as constructor-injected parameter
+    private final int specialCustomerDiscountPercentage;
 
-    public CustomerImporter(@Value("${junior.customer.discount.percent}") int juniorCustomerDiscountPercentage) {
+    // Challenge: Add other discount percentage here and as constructor-injected
+    // parameter
+
+    public CustomerImporter(@Value("${junior.customer.discount.percent}") int juniorCustomerDiscountPercentage,
+            @Value("${special.customer.discount.percent}") int specialCustomerDiscountPercentage) {
         this.juniorCustomerDiscountPercentage = juniorCustomerDiscountPercentage;
+        this.specialCustomerDiscountPercentage = specialCustomerDiscountPercentage;
     }
 
     public List<Customer> importCustomers(File customerCsv) {
@@ -48,15 +53,26 @@ public class CustomerImporter {
         return customers;
     }
 
-    private Customer parseCsvLineIntoObject(String id, String name, String email, String birthDay, String lastBuy, String type) {
+    private Customer parseCsvLineIntoObject(String id, String name, String email, String birthDay, String lastBuy,
+            String type) {
         try {
             LocalDate birthDate = DateUtil.convertStringToLocalDate(birthDay);
             LocalDate lastBuyDate = DateUtil.convertStringToLocalDate(lastBuy);
             switch (type.toUpperCase()) {
                 case "E": {
-                    // Challenge: If you added a discount for this customer type, add the discount to the constructor here
-                    SpecialCustomer specialCustomer = new SpecialCustomer(id, name, email, birthDate, lastBuyDate);
-                    return specialCustomer;
+                    // Challenge: If you added a discount for this customer type, add the discount
+                    // to the constructor here
+                    // SpecialCustomer specialCustomer = new SpecialCustomer(id, name, email,
+                    // birthDate, lastBuyDate);
+                    // return specialCustomer;
+
+                    boolean lastPurchaseIn15Days = Period.between(lastBuyDate, LocalDate.now()).getDays() < 15;
+                    if (lastPurchaseIn15Days) {
+                        SpecialCustomer specialCustomer = new SpecialCustomer(specialCustomerDiscountPercentage, id,
+                                name, email, birthDate, lastBuyDate);
+                        return specialCustomer;
+                    }
+
                 }
                 case "V": {
                     VICustomer viCustomer = new VICustomer(id, name, email, birthDate, lastBuyDate);
@@ -66,13 +82,16 @@ public class CustomerImporter {
                     boolean youngerThan25 = Period.between(birthDate, LocalDate.now()).getYears() < 25;
                     boolean lastPurchaseIn25Days = Period.between(lastBuyDate, LocalDate.now()).getDays() < 90;
                     if (youngerThan25) {
-                        JuniorCustomer juniorKunde = new JuniorCustomer(juniorCustomerDiscountPercentage, id, name, email, birthDate, lastBuyDate);
+                        JuniorCustomer juniorKunde = new JuniorCustomer(juniorCustomerDiscountPercentage, id, name,
+                                email, birthDate, lastBuyDate);
                         return juniorKunde;
                     } else if (lastPurchaseIn25Days) {
-                        StandardCustomerWithPotential potentialCustomer = new StandardCustomerWithPotential(id, name, email, birthDate, lastBuyDate);
+                        StandardCustomerWithPotential potentialCustomer = new StandardCustomerWithPotential(id, name,
+                                email, birthDate, lastBuyDate);
                         return potentialCustomer;
                     } else {
-                        StandardCustomerNoPotential noPotentialCustomer = new StandardCustomerNoPotential(id, name, email, birthDate, lastBuyDate);
+                        StandardCustomerNoPotential noPotentialCustomer = new StandardCustomerNoPotential(id, name,
+                                email, birthDate, lastBuyDate);
                         return noPotentialCustomer;
                     }
                 }
