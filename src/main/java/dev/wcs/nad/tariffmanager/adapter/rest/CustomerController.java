@@ -6,6 +6,7 @@ import dev.wcs.nad.tariffmanager.adapter.rest.dto.customer.CustomerDto;
 import dev.wcs.nad.tariffmanager.mapper.mapstruct.EntityToDtoMapper;
 import dev.wcs.nad.tariffmanager.persistence.entity.Customer;
 import dev.wcs.nad.tariffmanager.service.CustomerService;
+import dev.wcs.nad.tariffmanager.mapper.simple.CustomerMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,8 @@ public class CustomerController {
     private final CustomerMapper customerMapper;
 
     @Autowired
+    // erreur sur le C de CustomerMapper customerMapper (symbole) pareil pour celui
+    // du dessus cannot find symbol
 
     public CustomerController(CustomerService customerService, CustomerMapper customerMapper) {
         this.customerService = customerService;
@@ -48,6 +51,6 @@ public class CustomerController {
     public ResponseEntity<CustomerDto> assignAddress(@PathVariable("id") Long customerId,
             @RequestBody AddressDto addressDto) {
         Customer customerEntity = customerService.assignAddress(customerId, customerMapper.mapAddressDto(addressDto));
-        return ResponseEntity.ok(customerMapper.connvertEntityToDto(customerEntity));
+        return ResponseEntity.ok(customerMapper.convertEntityToDto(customerEntity));
     }
 }
