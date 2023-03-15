@@ -6,7 +6,6 @@ import dev.wcs.nad.tariffmanager.persistence.entity.Customer;
 import org.springframework.stereotype.Component;
 
 @Component
-
 public class CustomerMapper {
 
     public CustomerDto convertEntityToDto(Customer customerEntity) {
@@ -33,6 +32,10 @@ public class CustomerMapper {
         customerBuilder.lastname(customerDto.getLastname());
         customerBuilder.passportNo(customerDto.getPassportNo());
         return customerBuilder.build();
+    }
+
+    public Customer convertDtoToEntity(CreateCustomerDto createCustomerDto) {
+        return null;
     }
 
 }
