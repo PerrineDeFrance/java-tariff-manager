@@ -23,9 +23,12 @@ public class Tariff {
     private BigDecimal price;
 
     @ManyToMany
-    @JoinTable(name = "tariff_options",
-            joinColumns = @JoinColumn(name = "tariff_id"),
-            inverseJoinColumns = @JoinColumn(name = "options_id"))
+    @JoinTable(name = "tariff_options", joinColumns = @JoinColumn(name = "tariff_id"), inverseJoinColumns = @JoinColumn(name = "options_id"))
     private Set<Option> possibleOptions = new LinkedHashSet<>();
+
+    @ManyToOne
+
+    @JoinColumn(name = "department_id")
+    private Department department;
 
 }

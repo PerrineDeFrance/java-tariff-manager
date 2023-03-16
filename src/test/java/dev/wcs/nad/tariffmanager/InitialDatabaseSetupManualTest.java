@@ -16,18 +16,26 @@ public class InitialDatabaseSetupManualTest {
 
     private Faker faker = new Faker(Locale.US);
 
-    @Autowired private CustomerRepository customerRepository;
-    @Autowired private ContactRepository contactRepository;
-    @Autowired private AddressRepository addressRepository;
-    @Autowired private ContractRepository contractRepository;
-    @Autowired private OptionRepository optionRepository;
-    @Autowired private TariffRepository tariffRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private ContactRepository contactRepository;
+    @Autowired
+    private AddressRepository addressRepository;
+    @Autowired
+    private ContractRepository contractRepository;
+    @Autowired
+    private OptionRepository optionRepository;
+    @Autowired
+    private TariffRepository tariffRepository;
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @Test
     public void setupDatabase() {
         // Create customers
         Customer[] customers = new Customer[10];
-        for (int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             Customer customer = createFakeCustomer();
             Address address = createFakeAddress();
             Contact contact = createFakeContact();
@@ -38,7 +46,7 @@ public class InitialDatabaseSetupManualTest {
             customers[i] = customer;
         }
         // Create Tariffs & Contracts & Options
-        for (int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             Option option = createFakeOption();
             Tariff tariff = createFakeTariff();
             tariff.getPossibleOptions().add(option);
@@ -51,7 +59,7 @@ public class InitialDatabaseSetupManualTest {
         }
     }
 
-    //@Test
+    // @Test
     public void clearDatabase() {
         customerRepository.deleteAll();
         contactRepository.deleteAll();
@@ -106,5 +114,12 @@ public class InitialDatabaseSetupManualTest {
         Contract contract = new Contract();
         return contractRepository.save(contract);
     }
+
+    private Department createFakeDepartment() {
+        Department department = new Department();
+        department.setName(faker.company().buzzword());
+        return departmentRepository.save(department);
+    }
+   
 
 }
